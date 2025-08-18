@@ -45,12 +45,12 @@ function AddDecoderDialog({ open, onClose }: AddDecoderDialogProps) {
   const [decoderConfig, setDecoderConfig] = React.useState<DecoderConfig>([]);
 
   function handleAddSensor() {
-    setDecoderConfig((prev) => [...prev, { name: '', struct: [] }]);
+    setDecoderConfig((prev) => [...prev, { name: '', struct: [] , splitChar: "" }]);
   }
 
   function handleAddStructKey(sensorName: string) {
     setDecoderConfig((prev) =>
-      prev.reduce((acc, curr) => {
+      prev.reduce((acc, curr) => { 
         if (curr.name !== sensorName) return [...acc, curr];
         else {
           const newStruct: SensorStruct = [
@@ -61,6 +61,7 @@ function AddDecoderDialog({ open, onClose }: AddDecoderDialogProps) {
             ...acc,
             {
               name: curr.name,
+              splitChar: curr.splitChar,
               struct: newStruct,
             },
           ];

@@ -55,7 +55,12 @@ const StyledCode = styled('code')(() => ({
   overflowWrap: 'anywhere',
 }));
 
-const FormattedNumber = ({ n }: { n: number }) => {
+const FormattedNumber = ({ n }: { n: number | string }) => {
+  // if it is a string return immediately
+  if (typeof n === "string") {
+    return n;
+  }
+
   // if n is not a number, return it as a string
   if (isNaN(n)) {
     return <>{n.toString()}</>;
@@ -193,7 +198,7 @@ const RoundedButton = styled(Button)(() => ({
 }));
 
 interface NestedObject {
-  [key: string]: NestedObject | number;
+  [key: string]: NestedObject | number | string;
 }
 
 function flattenObject(obj: NestedObject): { [key: string]: number } {

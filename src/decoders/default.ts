@@ -17,7 +17,7 @@ const defaultSensorStruct: SensorStruct = [
 export const defaultDecoder: Decoder = {
   name: 'Toolkit example (default)',
   config: [
-    { name: 'temp', struct: defaultSensorStruct },
-    { name: 'hum', struct: defaultSensorStruct },
+    { name: 'temp', struct: defaultSensorStruct, splitChar: "" },
+    { name: 'hum', struct: defaultSensorStruct, splitChar: "" }, // if the char to split on is empty, we assume you are using the default decoding method
   ],
 };

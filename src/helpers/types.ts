@@ -37,6 +37,7 @@ export type SensorStruct = Array<{
 
 export type DecoderConfig = Array<{
   name: string;
+  splitChar: string;
   struct: SensorStruct;
 }>;
 
@@ -47,7 +48,7 @@ export interface Decoder {
 
 export interface DecoderOutput {
   [sensor: string]: {
-    [elem: string]: number;
+    [elem: string]: number | string; 
   };
 }
 
