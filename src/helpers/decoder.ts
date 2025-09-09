@@ -80,15 +80,12 @@ function removePadding(hexString: string): string {
  * The decoded data is then stored in the result object, with the struct name as the key.
  */
 export function decode({ decoderConfig, hexData }: DecodeProps): DecoderOutput {
-  console.log("woo", hexData);
-  hexData = removePadding(hexData)
   // going to decode into a string because I'm a lil more comfortable with string manip than what is already here 
   // and this hex to struct method is not going to work for our use case as is, too much messy data
   const byteData = Buffer.from(hexData.replace(/\s+/g, ''), 'hex');
-  console.log("byteData", byteData.toString());
   const result: DecoderOutput = {};
     // If the splitChar is empty, we use the default decoding method
-  if(decoderConfig[0].splitChar === "") { // TODO: make this a lil more sane, should do a better check than this
+  if(decoderConfig[0].splitChar === undefined || decoderConfig[0].splitChar === "") { 
     let offset = 0;
 
     for (const { name, struct, splitChar } of decoderConfig) {
@@ -105,12 +102,12 @@ export function decode({ decoderConfig, hexData }: DecodeProps): DecoderOutput {
       offset = newOffset;
     }
   }else{
+    hexData = removePadding(hexData)
     for(const {name, struct, splitChar } of decoderConfig) {
       if(splitChar !== decoderConfig[0].splitChar) {
         throw new Error(`Inconsistent splitChar detected in decoder config ${name}: ${splitChar}`);
       }
       result[name] = stringToStruct(byteData.toString(), struct, splitChar,);
-
     }
   }
 
