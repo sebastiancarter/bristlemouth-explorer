@@ -83,6 +83,7 @@ function removePadding(hexString: string): string {
 export function decode({ decoderConfig, hexData }: DecodeProps): DecoderOutput {
   // going to decode into a string because I'm a lil more comfortable with string manip than what is already here 
   // and this hex to struct method is not going to work for our use case as is, too much messy data
+  hexData = removePadding(hexData)
   const byteData = Buffer.from(hexData.replace(/\s+/g, ''), 'hex');
   const result: DecoderOutput = {};
     // If the splitChar is empty, we use the default decoding method (the one that existed previously)
@@ -104,7 +105,6 @@ export function decode({ decoderConfig, hexData }: DecodeProps): DecoderOutput {
       offset = newOffset;
     }
   }else{
-    hexData = removePadding(hexData)
     for(const {name, struct, splitChar } of decoderConfig) {
       if(splitChar !== decoderConfig[0].splitChar) {
           // i believe the same thing applies as above, if your splitchar changes, its kinda hard to tell what might happen
