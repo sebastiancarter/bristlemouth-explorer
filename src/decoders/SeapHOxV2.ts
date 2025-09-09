@@ -7,7 +7,7 @@
  */
 
 import { Decoder, SensorStruct } from 'src/helpers/types';
-// 14 keys
+// this may not be the exact setup for your seaphox v2 sensor, see the manual for more details
 const SeapHOxV2Struct: SensorStruct = [
   { key: 'name', dataType: 'uint16_t', display: true },
   { key: 'dateTime', dataType: 'uint16_t', display: true },
@@ -30,6 +30,6 @@ const SeapHOxV2Struct: SensorStruct = [
 export const SeapHOxV2Decoder: Decoder = {
   name: 'SeapHOx V2 Decoder',
   config: [
-    { name: 'data', struct: SeapHOxV2Struct, splitChar: "," },
+    { name: 'data', struct: SeapHOxV2Struct, splitChar: "," }, // we want to split the decoded data up by commas, as the data comes in as a long list of values seperated by commas
   ],
 };

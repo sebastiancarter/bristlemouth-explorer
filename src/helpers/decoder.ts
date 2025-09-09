@@ -54,7 +54,7 @@ interface DecodeProps {
 }
 
 // new function
-// this is my approach to making this guy work.
+// this is my approach to making the decoder work
 function stringToStruct(hexString: string, structDescription: SensorStruct, splitChar: string) {
   console.log("stringToStruct", hexString, structDescription, splitChar);
   // splitting the string into a list based on splitChar
@@ -75,7 +75,8 @@ function removePadding(hexString: string): string {
 
 
 /**
- * This function decodes the hex data using the provided decoder configuration.
+ * This function either decodes the hex data using the provided decoder configuration or decodes the hex data and then splits it up based on the presence of a splitchar in the config
+ * if using the first method:
  * It iterates over each struct in the decoder configuration, and for each struct, it decodes the corresponding part of the hex data.
  * The decoded data is then stored in the result object, with the struct name as the key.
  */
@@ -84,13 +85,14 @@ export function decode({ decoderConfig, hexData }: DecodeProps): DecoderOutput {
   // and this hex to struct method is not going to work for our use case as is, too much messy data
   const byteData = Buffer.from(hexData.replace(/\s+/g, ''), 'hex');
   const result: DecoderOutput = {};
-    // If the splitChar is empty, we use the default decoding method
-  if(decoderConfig[0].splitChar === undefined || decoderConfig[0].splitChar === "") { 
+    // If the splitChar is empty, we use the default decoding method (the one that existed previously)
+  if(decoderConfig[0].splitChar === undefined || decoderConfig[0].splitChar === "") { // I believe "" is equivalent to undefined in javascript? not sure but when I added undefined this
     let offset = 0;
 
     for (const { name, struct, splitChar } of decoderConfig) {
       if(splitChar !== decoderConfig[0].splitChar) {
         // If the splitChar is different, we cannot switch methods without putting the offset out of sync I'm pretty sure
+          // so throwing an error here is necessary
         throw new Error(`Inconsistent splitChar detected in decoder config ${name}: ${splitChar}`);
       }
       const { decoded, offset: newOffset } = hexToStruct({
@@ -105,6 +107,8 @@ export function decode({ decoderConfig, hexData }: DecodeProps): DecoderOutput {
     hexData = removePadding(hexData)
     for(const {name, struct, splitChar } of decoderConfig) {
       if(splitChar !== decoderConfig[0].splitChar) {
+          // i believe the same thing applies as above, if your splitchar changes, its kinda hard to tell what might happen
+          // but I don't think it's a good idea so im throwing an error here
         throw new Error(`Inconsistent splitChar detected in decoder config ${name}: ${splitChar}`);
       }
       result[name] = stringToStruct(byteData.toString(), struct, splitChar,);
